@@ -1,5 +1,5 @@
 builds:
-- binary: kubernetes-nginx-operator
+- binary: manager
   env:
   - CGO_ENABLED=0
   goos:
