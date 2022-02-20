@@ -27,6 +27,8 @@ jobs:
         run: |
           echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin quay.io
 
+      - run: ls -lah ./
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
