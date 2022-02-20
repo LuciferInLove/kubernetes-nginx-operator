@@ -57,6 +57,7 @@ Fields **host** and **certManagerIssuer** are mandatory, other fields are option
     ```
 * Deploy **kubernetes-nginx-operator** with dependencies using helm chart from the repository. **nginx-ingress-controller** and **cert-manager** will be also installed.
     ```shell
+    $ helm dependency update
     $ helm install kubernetes-nginx-operator ./charts/kubernetes-nginx-operator \
         --set installDependencies=true
     ```

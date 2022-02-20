@@ -7,12 +7,14 @@ An example of Kubernetes operator that deploys nginx
 ## Installing the Chart ignoring dependencies
 
 ```shell
+$ helm dependency update
 $ helm install kubernetes-nginx-operator ./charts/kubernetes-nginx-operator
 ```
 
 ## Installing the Chart with dependencies
 
 ```shell
+$ helm dependency update
 $ helm install kubernetes-nginx-operator ./charts/kubernetes-nginx-operator \
     --set installDependencies=true
 ```
