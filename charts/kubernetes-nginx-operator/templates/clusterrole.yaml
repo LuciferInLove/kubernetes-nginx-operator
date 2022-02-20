@@ -1,0 +1,67 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "kubernetes-nginx-operator.fullname" . }}
+  labels:
+    {{- include "kubernetes-nginx-operator.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - nginx.custom-nginx.org
+  resources:
+  - nginxes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - nginx.custom-nginx.org
+  resources:
+  - nginxes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - nginx.custom-nginx.org
+  resources:
+  - nginxes/status
+  verbs:
+  - get
+  - patch
+  - update
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  - "apps"
+  - "networking.k8s.io"
+  - "cert-manager.io"
+  resources:
+  - services
+  - ingresses
+  - deployments
+  - certificates
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete

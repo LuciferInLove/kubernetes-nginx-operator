@@ -1,0 +1,26 @@
+# {{ .Name | title }}
+
+![Version: {{ .Version }}](https://img.shields.io/badge/Version-{{ .Version }}-informational?style=flat-square) ![Type: {{ .Type }}](https://img.shields.io/badge/Type-{{ .Type }}-informational?style=flat-square)
+
+{{ template "chart.description" . }}
+
+## Installing the Chart ignoring dependencies
+
+```shell
+$ helm install {{ .Name }} ./charts/kubernetes-nginx-operator
+```
+
+## Installing the Chart with dependencies
+
+```shell
+$ helm install {{ .Name }} ./charts/kubernetes-nginx-operator \
+    --set installDependencies=true
+```
+
+## Uninstalling the Chart
+
+```shell
+$ helm uninstall {{ .Name }}
+```
+
+{{ template "chart.valuesSection" . }}

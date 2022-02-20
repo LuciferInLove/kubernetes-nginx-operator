@@ -1,0 +1,23 @@
+builds:
+- binary: kubernetes-nginx-operator
+  env:
+  - CGO_ENABLED=0
+  goos:
+  - linux
+  goarch:
+  - amd64
+
+dockers:
+-
+  goarch: amd64
+  ids:
+  - kubernetes-nginx-operator
+  image_templates:
+  - "quay.io/luciferinlove/kubernetes-nginx-operator:latest"
+  - "quay.io/luciferinlove/kubernetes-nginx-operator:{{ .Tag }}"
+
+archives:
+- name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
+  format: tar.gz
+  files:
+  - none*

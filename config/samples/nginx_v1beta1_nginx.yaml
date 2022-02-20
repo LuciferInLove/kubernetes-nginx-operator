@@ -1,0 +1,10 @@
+apiVersion: nginx.custom-nginx.org/v1beta1
+kind: Nginx
+metadata:
+  name: nginx-sample
+spec:
+  replicas: 1
+  host: example.org
+  image: "nginx:latest"
+  serviceAccount: default
+  certManagerIssuer: my-ca-issuer

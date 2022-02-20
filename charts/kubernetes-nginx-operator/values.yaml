@@ -1,0 +1,75 @@
+# Default values.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Container images.
+## ref: https://kubernetes.io/docs/concepts/containers/images
+##
+image:
+  repository: quay.io/luciferinlove/kubernetes-nginx-operator
+  tag: v0.0.1
+  pullPolicy: IfNotPresent
+
+kubeRbacProxy:
+  image:
+    repository: gcr.io/kubebuilder/kube-rbac-proxy
+    tag: v0.8.0
+    pullPolicy: IfNotPresent
+
+## Install chart dependencies
+##
+installDependencies: false
+
+replicas: 1
+
+## Pods updating strategy.
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+##
+deploymentStrategy:
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+  type: RollingUpdate
+
+## Grace period before pods are allowed to be killed forcefully.
+## ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+##
+terminationGracePeriodSeconds: 10
+
+## Additonal labels for running pods in tained nodes
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## Pods affinity rules.
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+##
+affinity: {}
+
+## Pod-level security settings.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+podSecurityContext:
+  runAsNonRoot: true
+
+## Container-level security settings.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+
+## Resources requests and limits for single Pods.
+## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  limits:
+    cpu: 500m
+    memory: 128Mi
+  requests:
+    cpu: 10m
+    memory: 64Mi
+
+## Service account.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+serviceAccount:
+  name: ""
