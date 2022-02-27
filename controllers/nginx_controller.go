@@ -23,6 +23,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
@@ -58,6 +59,35 @@ func (r *NginxReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		}
 		logger.Error(err, "Failed to get Nginx resource.")
 		return ctrl.Result{}, err
+	}
+
+	// Add finalizer to delete external resources
+	secretFinalizer := "custom-nginx.org/finalizer"
+
+	// Check if Nginx resource is not under deletion and add finalizer
+	if nginx.ObjectMeta.DeletionTimestamp.IsZero() {
+		if !controllerutil.ContainsFinalizer(&nginx, secretFinalizer) {
+			controllerutil.AddFinalizer(&nginx, secretFinalizer)
+			if err := r.Update(ctx, &nginx); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+	} else {
+		// If resource is under deletion, delete secret and then delete the finalizer
+		if controllerutil.ContainsFinalizer(&nginx, secretFinalizer) {
+			// Remove secret
+			if err := r.deleteSecret(ctx, nginx); err != nil {
+				return ctrl.Result{}, err
+			}
+
+			// Remove the finalizer
+			controllerutil.RemoveFinalizer(&nginx, secretFinalizer)
+			if err := r.Update(ctx, &nginx); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+
+		return ctrl.Result{}, nil
 	}
 
 	err := r.deploymentReconcile(ctx, nginx)

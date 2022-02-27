@@ -57,6 +57,7 @@ rules:
   - ingresses
   - deployments
   - certificates
+  - secrets
   verbs:
   - get
   - list
@@ -65,3 +66,4 @@ rules:
   - update
   - patch
   - delete
+  - deletecollection

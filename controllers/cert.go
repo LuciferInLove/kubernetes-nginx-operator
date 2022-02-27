@@ -22,10 +22,8 @@ import (
 	nginxv1beta1 "github.com/LuciferInLove/kubernetes-nginx-operator/api/v1beta1"
 	cert "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
-	core "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/fields"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
@@ -73,31 +71,4 @@ func createCertificate(nginx nginxv1beta1.Nginx) *cert.Certificate {
 		},
 	}
 	return &certificate
-}
-
-func (r *NginxReconciler) deleteSecret(ctx context.Context, nginx nginxv1beta1.Nginx) error {
-	logger := log.Log.WithName("controller").WithName("certificatdelete")
-	secret := core.Secret{}
-
-	// Check if the target secret exists
-	logger.Info("Checking if the target secret exists before deleting...")
-	err := r.Client.Get(ctx, client.ObjectKey{Namespace: nginx.Namespace, Name: nginx.Name + "-tls"}, &secret)
-	if apierrors.IsNotFound(err) {
-		// Delete secret
-		logger.Info("Deleting secret " + nginx.Name + "-tls")
-		if err := r.Client.DeleteAllOf(ctx, &secret, client.InNamespace(nginx.Namespace), client.MatchingFieldsSelector{
-			Selector: fields.AndSelectors(
-				fields.OneTermNotEqualSelector("metadata.name", nginx.Name),
-			),
-		}); err != nil {
-			return err
-		}
-		return nil
-	}
-
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
