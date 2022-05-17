@@ -104,3 +104,27 @@ Fields **host** and **certManagerIssuer** are mandatory, other fields are option
     kubectl port-forward service/nginx-ingress-controller 8443:443
     ```
 * Try to open https://example.org:8443 in your browser. Skip certificate warning. You should see "Welcome to Nginx" page.
+
+## Local development with kind/podman/buildah
+
+* Build **kubernetes-nginx-operator** after changing the code.
+    ```shell
+    $ buildah bud -f local-development/Dockerfile .
+    ```
+* Save the built image to the tar file.
+    ```shell
+    $ podman tag built_image_id kubernetes-nginx-operator:v0.0.1
+    $ podman save kubernetes-nginx-operator:v0.0.1 -o controller.tar
+    ```
+* Load the image from the tar file to the kind cluster.
+    ```shell
+    $ kind load image-archive controller.tar
+    ```
+* Update version in **local-development/values.yaml** file if needed.
+* Install/Upgrade **kubernetes-nginx-operator** using chart.
+    ```shell
+    $ helm dependency update
+    $ helm install kubernetes-nginx-operator ./charts/kubernetes-nginx-operator \
+        --set installDependencies=true \
+        -f local-development/values.yaml
+    ```
